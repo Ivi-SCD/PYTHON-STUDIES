@@ -4,6 +4,7 @@ from datetime import datetime
 
 df = pd.read_csv("monitoramento_tempo.csv")
 df['data'] = pd.to_datetime(df['data'])
+df_selecao = df[(df['data'] > datetime(2014,5,1)) & (df['data'] < datetime(2014,6,1))]
 
 fig = plt.figure(figsize=(15,8))
 eixo = fig.add_axes([0, 0, 1, 1])
@@ -18,6 +19,24 @@ eixo.legend(['temperatura'], loc = "lower right", fontsize=15)
 eixo.set_ylabel('Temperatura Kelvin', fontsize=20)
 eixo.set_xlabel('Data', fontsize=20)
 
+x1 = df_selecao['data'][df_selecao['temperatura'].idxmax()]
+y1 = max(df_selecao['temperatura'])
+
+x2 = df_selecao['data'][df_selecao['temperatura'].idxmax()] - pd.Timedelta(hours=80)
+y2 = max(df_selecao['temperatura']) - 5
+
+eixo.annotate("Máximo", xy = (x1,y1), fontsize=20, xytext = (x2,y2), arrowprops=dict(facecolor='k'))
+eixo.axhline(max(df_selecao['temperatura']), color = 'k', linestyle='--')
+eixo.axhline(min(df_selecao['temperatura']), color = 'k', linestyle='--')
+
+x3 = df_selecao['data'][df_selecao['temperatura'].idxmin()]
+y3 = min(df_selecao['temperatura'])
+
+x4 = df_selecao['data'][df_selecao['temperatura'].idxmin()] - pd.Timedelta(hours=80)
+y4 = min(df_selecao['temperatura']) + 5
+
+eixo.annotate("Mínimo", xy = (x3,y3), fontsize=20, xytext = (x4,y4), arrowprops=dict(facecolor='k'))
+eixo.annotate("Máximo", xy = (x1,y1), fontsize=20, xytext = (x2,y2), arrowprops=dict(facecolor='k'))
 
 azul_esquerda = df['data'] < datetime(2014,5,1)
 azul_direita = df['data'] > datetime(2014,6,1)
